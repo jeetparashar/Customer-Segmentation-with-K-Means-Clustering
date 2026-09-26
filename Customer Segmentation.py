@@ -2,14 +2,20 @@
 """
 Customer Segmentation with K-Means Clustering
 
-Segments customers using Age, Gender, Category, and PreviousPurchases.
+Segments customers using Age, Gender, Category, and Previous Purchases,
+from the Kaggle "Customer Shopping Trends Dataset"
+(https://www.kaggle.com/datasets/iamsouravbanerjee/customer-shopping-trends-dataset).
 
-Fix: earlier versions of this script built a feature matrix from
-Age, Gender, Category and PreviousPurchases, but then overwrote it
+Fix 1: earlier versions of this script built a feature matrix from
+Age, Gender, Category and Previous Purchases, but then overwrote it
 with only the one-hot-encoded Gender column right before scaling, so
 the model was effectively clustering on gender alone. This version
 keeps all four features in the matrix that actually gets scaled and
 clustered.
+
+Fix 2: the dataset's column is named "Previous Purchases" (with a
+space), not "PreviousPurchases" as earlier versions of this script
+assumed - that mismatch raised a KeyError against the real file.
 """
 
 import pandas as pd
@@ -23,11 +29,11 @@ print(data.columns)
 print(data.head())
 
 # Select the features we want to cluster on
-features = data[["Age", "Gender", "Category", "PreviousPurchases"]].copy()
+features = data[["Age", "Gender", "Category", "Previous Purchases"]].copy()
 
 # One-hot encode the categorical columns and keep the numeric ones alongside them
 categorical_cols = ["Gender", "Category"]
-numeric_cols = ["Age", "PreviousPurchases"]
+numeric_cols = ["Age", "Previous Purchases"]
 
 encoded = pd.get_dummies(features[categorical_cols], drop_first=True)
 X = pd.concat([features[numeric_cols], encoded], axis=1)
